@@ -9,7 +9,7 @@ use anyhow::Result;
 use crate::structs::{Config, communication::RadarData};
 
 async fn handle_connection(peer: SocketAddr, stream: TcpStream, data_lock: Arc<RwLock<RadarData>>) -> Result<(), Error> {
-    let mut ws_stream = accept_async(stream).await.expect("Failed to accept");
+    let mut ws_stream = accept_async(stream).await?;
 
     log::info!("New WebSocket connection: {}", peer);
 

@@ -35,13 +35,18 @@ function render() {
                             case "Enemy":
                                 fillStyle = "#db1d1d"
                                 break;
+
+                            case "Local":
+                                fillStyle = "#42f566"
+                                console.log(data)
                         }
 
                         drawEntity(
                             data.Player.pos.x, 
                             data.Player.pos.y, 
                             fillStyle, 
-                            data.Player.isDormant
+                            data.Player.isDormant,
+                            data.Player.hasBomb
                         )
                     }
                 });

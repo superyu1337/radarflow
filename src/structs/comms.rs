@@ -41,10 +41,11 @@ pub enum EntityData {
     Bomb(BombData)
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub enum PlayerType {
     #[default]
     Unknown,
+    Spectator,
     Local,
     Enemy,
     Team
