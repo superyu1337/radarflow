@@ -15,8 +15,9 @@ Now you can run radarflow:
 
 
 ## Configuration
-radarflow reads a configuration file named `Config.toml` from the directory it got invoked at.  
-If you run with cargo, that file is simply going to be at the root of the cloned repository.
+radarflow can read a configuration file named `Config.toml` from the directory it got invoked at.  
+If you run with cargo, that file is simply going to be at the root of the cloned repository.  
+If it can't find the configuration file, the internal defaults will be used instead.
 
 ### Configuration file format
 The configuration file uses the [TOML](https://toml.io/en/) format.
