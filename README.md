@@ -10,7 +10,7 @@ How to set up a VM on linux is way out of scope for this. You can find plenty of
 After you have set up your VM, you can clone this repository on your host:  
 `git clone https://github.com/superyu1337/radarflow.git`
 
-Now you can run radarflow:
+Now you can run radarflow:  
 `cargo run --release`
 
 
@@ -19,7 +19,6 @@ radarflow can read a configuration file named `Config.toml` from the directory i
 If you run with cargo, that file is simply going to be at the root of the cloned repository.  
 If it can't find the configuration file, the internal defaults will be used instead.
 
-### Configuration file format
 The configuration file uses the [TOML](https://toml.io/en/) format.
 
 
@@ -51,10 +50,11 @@ How often per second the radarflow dma thread should poll the game for data
 I'm looking to resolve this issue soon.
 
 ## Logging
-This project uses the crate [`env_logger`](https://docs.rs/env_logger/0.10.0/env_logger/)  
+This project uses the [`env_logger`](https://docs.rs/env_logger/0.10.0/env_logger/) crate.  
+The environment variable is `RADARFLOW_LOG`.  
 Refer to it's documentation on how to configure logging using environment variables.
 
 ## Detection Status
-VAC: ✅  
+VAC: ✅ (Undetected)  
 FaceIt: ❓ (Unknown, could work with proper spoofing)  
 ESEA: ❓ (Unknown, could work with proper spoofing)  
