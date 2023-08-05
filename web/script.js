@@ -116,7 +116,13 @@ function render() {
                 let maxY = -Infinity
 
                 entityData.forEach((data) => {
-                    let mapCords = mapCoordinates(data.Player.pos)
+                    let mapCords = null
+
+                    if (data.Bomb !== undefined) {
+                        mapCords = mapCoordinates(data.Bomb.pos)
+                    } else {
+                        mapCords = mapCoordinates(data.Player.pos)
+                    }
     
                     minX = Math.min(minX, mapCords.x);
                     minY = Math.min(minY, mapCords.y);
@@ -227,7 +233,7 @@ function drawEntity(pos, fillStyle, dormant, hasBomb, yaw) {
         circleRadius = boundingScale(7, boundingRect);
         distance = circleRadius + boundingScale(2, boundingRect);
         radius = distance + boundingScale(2, boundingRect)
-        arrowWidth = boundingScale(35, boundingRect)
+        arrowWidth = 35
     } else {
         pos = mapCoordinates(pos)
         circleRadius = 7
