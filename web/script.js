@@ -108,7 +108,7 @@ function render() {
             update = false
 
             // Iterate through the array and update the min/max values
-            if (entityData != null && map != null && shouldZoom) {
+            if (entityData != null && map != null && image != null && shouldZoom) {
 
                 let minX = Infinity
                 let minY = Infinity
@@ -143,7 +143,7 @@ function render() {
             if (entityData != null) {
                 entityData.forEach((data) => {
                     if (data.Bomb !== undefined) {
-                        drawBomb(data.Bomb.pos.x, data.Bomb.pos.y, data.Bomb.isPlanted)
+                        drawBomb(data.Bomb.pos, data.Bomb.isPlanted)
                     } else {
                         let fillStyle = localColor
 
