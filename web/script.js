@@ -1,3 +1,10 @@
+// Colors
+const localColor = "#109856"
+const teamColor = "#68a3e5"
+const enemyColor = "#ec040b"
+const bombColor = "#eda338"
+const textColor = "#d1d1d1"
+
 // Common
 canvas = null
 ctx = null
@@ -14,6 +21,11 @@ update = false
 websocket = null
 websocketAddr = `ws://${window.location.hostname}:8001`
 
+// Util function
+function degreesToRadians (degrees) {
+    return degrees * (Math.PI/180);     
+}
+
 function render() {
     if (update) {
         if (loaded) {
@@ -25,20 +37,16 @@ function render() {
                     if (data.Bomb !== undefined) {
                         drawBomb(data.Bomb.pos.x, data.Bomb.pos.y, data.Bomb.isPlanted)
                     } else {
-                        let fillStyle = "#42f566"
+                        let fillStyle = localColor
 
                         switch (data.Player.playerType) {
                             case "Team":
-                                fillStyle = "#4287f5"
+                                fillStyle = teamColor
                                 break;
 
                             case "Enemy":
-                                fillStyle = "#db1d1d"
+                                fillStyle = enemyColor
                                 break;
-
-                            case "Local":
-                                fillStyle = "#42f566"
-                                console.log(data)
                         }
 
                         drawEntity(
@@ -46,7 +54,8 @@ function render() {
                             data.Player.pos.y, 
                             fillStyle, 
                             data.Player.isDormant,
-                            data.Player.hasBomb
+                            data.Player.hasBomb,
+                            data.Player.yaw
                         )
                     }
                 });
@@ -56,12 +65,12 @@ function render() {
                 ctx.font = "100px Arial";
                 ctx.textAlign = "center"
                 ctx.textBaseline = "middle"
-                ctx.fillStyle = "#d1d1d1"
+                ctx.fillStyle = textColor
                 ctx.fillText("Not on a server", 1024/2, 1024/2); 
             } else {
                 ctx.font = "100px Arial";
                 ctx.textAlign = "center"
-                ctx.fillStyle = "#d1d1d1"
+                ctx.fillStyle = textColor
                 ctx.fillText("Disconnected", 1024/2, 1024/2); 
             }
         }
@@ -89,20 +98,22 @@ function drawBomb(x, y, planted) {
 
     ctx.beginPath();
     ctx.arc(offset_x, offset_y, 5, 0, 2 * Math.PI);
-    ctx.fillStyle = "#dbb81d";
+    ctx.fillStyle = bombColor;
     ctx.fill();
     ctx.closePath();
 
-    if (planted) {
-        ctx.strokeStyle = "#db1d1d"
-        ctx.lineWidth = 2;
+    if (planted && ((new Date().getTime() / 1000) % 1) > 0.5) {
+        ctx.strokeStyle = enemyColor
+        ctx.lineWidth = 1;
         ctx.stroke()
     }
 }
 
-function drawEntity(x, y, fillStyle, dormant, hasBomb) {
+function drawEntity(x, y, fillStyle, dormant, hasBomb, yaw) {
     if (map == null)
         return
+
+    const circleRadius = 7
 
     let offset_x = x - map.pos_x;
     let offset_y = y - map.pos_y;
@@ -116,17 +127,56 @@ function drawEntity(x, y, fillStyle, dormant, hasBomb) {
         ctx.fillStyle = fillStyle
         ctx.fillText("?", offset_x, offset_y); 
     } else {
+        // Draw circle
+
         ctx.beginPath();
-        ctx.arc(offset_x, offset_y, 7, 0, 2 * Math.PI);
+        ctx.arc(offset_x, offset_y, circleRadius, 0, 2 * Math.PI);
         ctx.fillStyle = fillStyle;
         ctx.fill();
-        ctx.closePath();
-    }
 
-    if (hasBomb) {
-        ctx.strokeStyle = "#dbb81d"
-        ctx.lineWidth = 2;
-        ctx.stroke()
+        if (hasBomb) {
+            ctx.beginPath();
+            ctx.arc(offset_x, offset_y, circleRadius / 2, 0, 2 * Math.PI);
+            ctx.fillStyle = "#dbb81d";
+            ctx.fill();
+        }
+
+
+        ctx.closePath();
+
+        // Calculate arrowhead points
+        const distance = circleRadius + 2
+        const radius = distance + 5;
+        const arrowWidth = 35;
+
+        const arrowHeadX = offset_x + radius * Math.cos(yaw * (Math.PI / 180))
+        const arrowHeadY = offset_y - radius * Math.sin(yaw * (Math.PI / 180))
+
+        const arrowCornerX1 = offset_x + distance * Math.cos((yaw - arrowWidth) * (Math.PI / 180))
+        const arrowCornerY1 = offset_y - distance * Math.sin((yaw - arrowWidth) * (Math.PI / 180))
+
+        const arrowCornerX2 = offset_x + distance * Math.cos((yaw + arrowWidth) * (Math.PI / 180))
+        const arrowCornerY2 = offset_y - distance * Math.sin((yaw + arrowWidth) * (Math.PI / 180))
+
+
+        const cicleYaw = 90-yaw
+        const startAngle = degreesToRadians(cicleYaw-arrowWidth)-Math.PI/2
+        const endAngle = degreesToRadians(cicleYaw+arrowWidth)-Math.PI/2
+
+        // Draw arrow
+
+        /// Backside of the arrow
+        ctx.beginPath();
+        ctx.arc(offset_x, offset_y, distance, startAngle, endAngle)
+
+        /// Draw from corners to arrowhead
+        ctx.lineTo(arrowCornerX1, arrowCornerY1);
+        ctx.lineTo(arrowHeadX, arrowHeadY);
+        ctx.lineTo(arrowCornerX2, arrowCornerY2);
+        ctx.closePath()
+
+        ctx.fillStyle = 'white'
+        ctx.fill();
     }
 }
 
