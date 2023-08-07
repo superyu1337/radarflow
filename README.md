@@ -21,13 +21,11 @@ If it can't find the configuration file, the internal defaults will be used inst
 
 The configuration file uses the [TOML](https://toml.io/en/) format.
 
-
 ### Default configuration
 ```toml
 # Config.toml
 web_port = 8000
 web_path = "./web"
-socket_port = 8001
 poll_rate = 60
 ```
 
@@ -38,9 +36,6 @@ Port to run the http webserver on
 `web_path` (default: `"./web"`)  
 Path to the files that the http webserver should serve.  
 By default radarflow will serve a barebones client implementation from `"./web"`
-
-`socket_port` (default: `8001`)  
-Port to run the websocket on
 
 `poll_rate` (default: `60`)  
 How often per second the radarflow dma thread should poll the game for data

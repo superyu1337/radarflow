@@ -47,7 +47,7 @@ impl Entity {
     }
 
     pub fn get_local(ctx: &mut CheatCtx) -> Result<Entity> {
-        let offset = ctx.offsets.get_sig("dwLocalPlayer")?;
+        let offset = ctx.offsets.sigs.dwLocalPlayer;
         let ptr = ctx.process.read_addr32(ctx.client_module.base + offset)?;
 
         Ok(Entity(ptr))
@@ -58,30 +58,30 @@ impl Entity {
     }
 
     pub fn get_health(&self, ctx: &mut CheatCtx) -> Result<i32> {
-        let offset = ctx.offsets.get_var("m_iHealth")?;
+        let offset = ctx.offsets.vars.m_iHealth;
         Ok(ctx.process.read(self.0 + offset)?)
     }
 
     pub fn get_team(&self, ctx: &mut CheatCtx) -> Result<Option<TeamID>> {
-        let offset = ctx.offsets.get_var("m_iTeamNum")?;
+        let offset = ctx.offsets.vars.m_iTeamNum;
         let team: i32 = ctx.process.read(self.0 + offset)?;
         Ok(TeamID::from_i32(team))
     }
 
     pub fn get_dormant(&self, ctx: &mut CheatCtx) -> Result<bool> {
-        let offset = ctx.offsets.get_sig("m_bDormant")?;
+        let offset = ctx.offsets.sigs.m_bDormant;
         let data: u8 = ctx.process.read(self.0 + offset)?;
 
         Ok(data != 0)
     }
 
     pub fn get_pos(&self, ctx: &mut CheatCtx) -> Result<Vec3> {
-        let offset = ctx.offsets.get_var("m_vecOrigin")?;
+        let offset = ctx.offsets.vars.m_vecOrigin;
         Ok(ctx.process.read(self.0 + offset)?)
     }
 
     pub fn get_yaw(&self, ctx: &mut CheatCtx) -> Result<f32> {
-        let offset = ctx.offsets.get_var("m_angEyeAnglesY")?;
+        let offset = ctx.offsets.vars.m_angEyeAnglesY;
         Ok(ctx.process.read(self.0 + offset)?)
     }
 

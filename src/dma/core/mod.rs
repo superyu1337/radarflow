@@ -1,9 +1,9 @@
-mod offset_man;
+mod offsets;
 pub mod csgo;
 
 use memflow::prelude::v1::*;
 
-use self::offset_man::Offsets;
+use self::offsets::Offsets;
 
 pub struct CheatCtx {
     pub process: IntoProcessInstanceArcBox<'static>,
@@ -14,6 +14,7 @@ pub struct CheatCtx {
 
 impl CheatCtx {
     pub fn setup() -> anyhow::Result<CheatCtx> {
+        let offsets = offsets::Offsets::new();
         let inventory = Inventory::scan();
 
         let os = inventory.builder()
@@ -26,8 +27,6 @@ impl CheatCtx {
         let client_module = process.module_by_name("client.dll")?;
 
         let engine_module = process.module_by_name("engine.dll")?;
-
-        let offsets = offset_man::get_offsets()?;
 
         let ctx = Self {
             process,

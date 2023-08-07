@@ -7,21 +7,21 @@ use tokio::{sync::RwLock, time::{Duration, Instant}};
 
 use memflow::{os::process::Process, prelude::MemoryView};
 
-use crate::{structs::{communication::{RadarData, EntityData, BombData, PlayerType, PlayerData}, Config}, dma::core::csgo};
+use crate::{structs::communication::{RadarData, EntityData, BombData, PlayerType, PlayerData}, dma::core::csgo};
 
 const SECOND_AS_NANO: u64 = 1000*1000*1000;
 static ONCE: std::sync::Once = std::sync::Once::new();
 
-pub async fn run(config: Config, data_lock: Arc<RwLock<RadarData>>) -> Result<()> {
+pub async fn run(poll_rate: u16, data_lock: Arc<RwLock<RadarData>>) -> Result<()> {
     let mut ctx = core::CheatCtx::setup()?;
 
     // Avoid printing warnings and other stuff before the initial prints are complete
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     // For poll rate timing
-    let should_time = config.poll_rate() != 0;
+    let should_time = poll_rate != 0;
 
-    let target_interval = Duration::from_nanos(SECOND_AS_NANO / config.poll_rate() as u64);
+    let target_interval = Duration::from_nanos(SECOND_AS_NANO / poll_rate as u64);
     let mut last_iteration_time = Instant::now();
     let mut missmatch_count = 0;
 
@@ -45,7 +45,7 @@ pub async fn run(config: Config, data_lock: Arc<RwLock<RadarData>>) -> Result<()
             let local_yaw = local.get_yaw(&mut ctx)?;
             let mut player_data = Vec::with_capacity(64);
 
-            let mut address = ctx.client_module.base + ctx.offsets.get_sig("dwEntityList")?;
+            let mut address = ctx.client_module.base + ctx.offsets.sigs.dwEntityList;
 
             while !address.is_null() {
                 let entry = csgo::CEntInfo::read(&mut ctx, address)?;

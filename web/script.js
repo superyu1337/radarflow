@@ -27,7 +27,7 @@ boundingRect = null
 
 // networking
 websocket = null
-websocketAddr = `ws://${window.location.hostname}:8001`
+websocketAddr = `ws://${window.location.host}/ws`
 
 // Util functions
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
@@ -104,6 +104,7 @@ function mapCoordinates(coordinates) {
 
 function render() {
     if (update) {
+        fillCanvas()
         if (loaded) {
             update = false
 
@@ -186,6 +187,11 @@ function render() {
     if (websocket != null) {
         websocket.send("requestInfo");
     }
+}
+
+function fillCanvas() {
+    ctx.fillStyle = "#0f0f0f";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawImage() {
