@@ -13,7 +13,7 @@ After you have set up your VM, you can clone this repository on your host:
 Now you can run radarflow:  
 `cargo run --release`
 
-For an overview of CLI commands, run
+For an overview of CLI commands, run this:  
 `cargo run --release -- --help`
 
 ## Detection Status
