@@ -1,7 +1,9 @@
-mod offsets;
+pub mod offsets;
 pub mod csgo;
 
 use memflow::prelude::v1::*;
+
+use crate::structs::Connector;
 
 use self::offsets::Offsets;
 
@@ -13,14 +15,29 @@ pub struct CheatCtx {
 }
 
 impl CheatCtx {
-    pub fn setup() -> anyhow::Result<CheatCtx> {
+    pub fn setup(connector: Connector, pcileech_device: String) -> anyhow::Result<CheatCtx> {
         let offsets = offsets::Offsets::new();
         let inventory = Inventory::scan();
 
-        let os = inventory.builder()
-            .connector("qemu")
-            .os("win32")
-            .build()?;
+        let os = { 
+            if connector == Connector::Pcileech {
+                let args = Args::new()
+                    .insert("device", &pcileech_device);
+
+                let connector_args = ConnectorArgs::new(None, args, None);                
+
+                inventory.builder()
+                    .connector(&connector.to_string())
+                    .args(connector_args)
+                    .os("win32")
+                    .build()?
+            } else {
+                inventory.builder()
+                .connector(&connector.to_string())
+                .os("win32")
+                .build()?
+            }
+        };
 
         let mut process = os.into_process_by_name("csgo.exe")?;
 

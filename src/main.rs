@@ -21,7 +21,7 @@ async fn main() -> anyhow::Result<()> {
     }
 
     simple_logger::SimpleLogger::new()
-        .with_level(cli.loglevel)
+        .with_level(cli.loglevel.into())
         .init()
         .expect("Initializing logger");
 
@@ -33,7 +33,7 @@ async fn main() -> anyhow::Result<()> {
 
     let rwlock_clone = rwlock.clone();
     let dma_handle = tokio::spawn(async move {
-        dma::run(cli.poll_rate, rwlock_clone).await
+        dma::run(cli.connector, cli.pcileech_device, cli.poll_rate, rwlock_clone).await
     });
 
     tokio::spawn(async move {

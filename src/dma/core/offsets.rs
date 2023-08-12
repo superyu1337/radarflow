@@ -3,7 +3,7 @@ use serde::Deserialize;
 #[allow(dead_code)] 
 #[derive(Clone, Deserialize)]
 pub struct Offsets {
-    timestamp: u64,
+    pub timestamp: u64,
 
     #[serde(rename(deserialize = "signatures"))]
     pub sigs: Signatures,

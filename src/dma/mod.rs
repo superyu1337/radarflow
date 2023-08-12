@@ -7,13 +7,13 @@ use tokio::{sync::RwLock, time::{Duration, Instant}};
 
 use memflow::{os::process::Process, prelude::MemoryView};
 
-use crate::{structs::communication::{RadarData, EntityData, BombData, PlayerType, PlayerData}, dma::core::csgo};
+use crate::{structs::{communication::{RadarData, EntityData, BombData, PlayerType, PlayerData}, Connector}, dma::core::csgo};
 
 const SECOND_AS_NANO: u64 = 1000*1000*1000;
 static ONCE: std::sync::Once = std::sync::Once::new();
 
-pub async fn run(poll_rate: u16, data_lock: Arc<RwLock<RadarData>>) -> Result<()> {
-    let mut ctx = core::CheatCtx::setup()?;
+pub async fn run(connector: Connector, pcileech_device: String, poll_rate: u16, data_lock: Arc<RwLock<RadarData>>) -> Result<()> {
+    let mut ctx = core::CheatCtx::setup(connector, pcileech_device)?;
 
     // Avoid printing warnings and other stuff before the initial prints are complete
     tokio::time::sleep(Duration::from_millis(500)).await;
